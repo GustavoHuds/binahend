@@ -1,13 +1,14 @@
 {
   "version": 2,
   "builds": [
-    { "src": "frontend/index.html", "use": "@vercel/static" },
-    { "src": "frontend/login.html", "use": "@vercel/static" }
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "login.html", "use": "@vercel/static" }
   ],
   "routes": [
-    { "src": "/", "dest": "/frontend/index.html" },
-    { "src": "/login", "dest": "/frontend/login.html" },
-    { "src": "/(.*)", "dest": "/frontend/index.html" }
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/login", "dest": "/login.html" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
+
 
