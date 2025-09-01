@@ -1,0 +1,6 @@
+body { font-family: Arial, sans-serif; margin:0; padding:0; }
+header { background:#6366f1; color:#fff; padding:20px; display:flex; gap:10px; align-items:center; }
+#results { padding:20px; }
+.result { border:1px solid #ddd; padding:10px; margin:10px 0; border-radius:5px; cursor:pointer; }
+.result:hover { background:#f9f9f9; }
+

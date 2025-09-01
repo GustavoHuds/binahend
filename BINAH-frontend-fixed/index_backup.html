@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BINAH - Base de Conhecimento Inteligente</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' http://localhost:3001; object-src 'none'; base-uri 'self';">
+    <meta name="description" content="BINAH - Base de Conhecimento Inteligente - Sistema de gestão de conhecimento técnico">
+    <meta name="keywords" content="base de conhecimento, gestão, técnico, busca, organização">
+    <link rel="stylesheet" href="assets/css/index.css">
+</head>
+<body>
+    <!-- Header sempre visível -->
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        body.searched {
+            background: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ========== HEADER (SEMPRE VISÍVEL) ========== */
+        .header {
+            background: rgba(26, 26, 46, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            transition: all 0.3s ease;
+            opacity: 1;
+            visibility: visible;
+            height: 80px;
+        }
+
+        .header.compact {
+            opacity: 1;
+            visibility: visible;
+            background: rgba(255, 255, 255, 0.95);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            height: 80px;
+        }
+
+        .header.compact .logo {
+            color: var(--dark);
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header.compact .header-btn {
+            background: rgba(26, 26, 46, 0.1);
+            color: var(--dark);
+            border-color: rgba(26, 26, 46, 0.2);
+        }
+
+        .header.compact .header-btn:hover {
+            background: rgba(26, 26, 46, 0.15);
+        }
+
+        .header.compact .status-bar {
+            color: var(--secondary);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            height: 100%;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #6366f1 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .header.compact .logo {
+            font-size: 28px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            height: 100%;
+            flex-shrink: 0;
+        }
+
+        .header-btn {
+            padding: 10px 16px;
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            height: 40px;
+            white-space: nowrap;
+        }
+
+        .header-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-1px);
+        }
+
+        .status-bar {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            font-size: 13px;
+            color: rgba(255,255,255,0.8);
+            height: 100%;
+            flex-wrap: wrap;
+        }
+
+        .db-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--warning);
+            display: inline-block;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        .db-indicator.connected {
+            background: var(--success);
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero-section {
+            min-height: calc(100vh - 80px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 50px 20px 50px 20px;
+            margin-top: 80px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .hero-section.hidden {
+            display: none !important;
+        }
+
+        .hero-title {
+            background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #6366f1 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 15px;
+            text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.8s ease both;
+        }
+
+        .hero-subtitle {
+            color: rgba(255,255,255,0.85);
+            font-size: 18px;
+            margin-bottom: 50px;
+            font-weight: 300;
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        /* ========== QUICK ACCESS (ACIMA DA BUSCA) ========== */
+        .quick-access {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.8s ease 0.4s both;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .quick-btn {
+            background: rgba(255,255,255,0.15);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 20px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .quick-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ========== SEARCH CONTAINER (ABAIXO DOS BOTÕES) ========== */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            animation: fadeInUp 0.8s ease 0.6s both;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 22px 70px 22px 28px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.95);
+            color: var(--dark);
+            box-shadow: var(--shadow-xl);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            margin: 0 auto;
+            display: block;
+        }
+
+        .search-box:focus {
+            outline: none;
+            transform: scale(1.02);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.25);
+            background: white;
+        }
+
+        .search-box::placeholder {
+            color: var(--secondary);
+            opacity: 0.8;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s;
+            box-shadow: var(--shadow);
+        }
+
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.1);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ========== LIVE SEARCH ========== */
+        .live-search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow-xl);
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 200;
+            margin-top: 8px;
+            opacity: 0;
+            transform: translateY(-10px);
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .live-search-results.active {
+            opacity: 1;
+            transform: translateY(0);
+            visibility: visible;
+        }
+
+        .live-result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .live-result-item:hover {
+            background: var(--light);
+            padding-left: 24px;
+        }
+
+        .live-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .live-result-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .live-result-category {
+            font-size: 12px;
+            padding: 4px 8px;
+            background: var(--primary);
+            color: white;
+            border-radius: 12px;
+            white-space: nowrap;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        .main-content {
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: all 0.5s ease;
+            background: white;
+            min-height: calc(100vh - 80px);
+            padding: 20px 0;
+            margin-top: 80px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .main-content.active {
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+            display: block !important;
+        }
+
+        /* ========== VIEW CONTROLS ========== */
+        .view-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-info h2 {
+            color: var(--dark);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .results-count {
+            color: var(--secondary);
+            font-size: 14px;
+        }
+
+        .view-options {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: var(--light);
+            color: var(--secondary);
+            border: 1px solid var(--border);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ========== RESULTS ========== */
+        .results-list-view {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .results-list-view.active {
+            opacity: 1 !important;
+            visibility: visible !important;
+            display: block !important;
+        }
+
+        .result-item {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .result-item:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            gap: 15px;
+        }
+
+        .result-header > div:first-child {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .result-title {
+            font-size: 20px;
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .result-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .result-category {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .result-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            color: var(--secondary);
+            font-size: 13px;
+        }
+
+        .result-preview {
+            color: var(--secondary);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .result-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 12px;
+        }
+
+        .keyword-tag {
+            font-size: 11px;
+            padding: 4px 8px;
+            background: var(--light);
+            color: var(--secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .keyword-tag:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 8px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .result-item:hover .result-actions {
+            opacity: 1;
+        }
+
+        .btn-icon {
+            background: transparent;
+            border: none;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-icon:hover {
+            background: var(--light);
+            transform: scale(1.1);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* ========== HIGHLIGHT ========== */
+        .highlight {
+            background: rgba(255, 235, 59, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+
+        /* ========== BOARD VIEW ========== */
+        .board-view {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .board-view.active {
+            display: grid;
+        }
+
+        .board-column {
+            background: var(--light);
+            border-radius: 16px;
+            padding: 20px;
+            min-height: 500px;
+            transition: all 0.3s;
+        }
+
+        .board-column:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .column-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .column-count {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .column-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .card-preview {
+            font-size: 12px;
+            color: var(--secondary);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+
+        .card-tag {
+            background: var(--light);
+            color: var(--secondary);
+            padding: 2px 6px;
+            border-radius: 8px;
+            font-size: 10px;
+        }
+
+        .card-stats {
+            display: flex;
+            gap: 8px;
+            color: var(--secondary);
+        }
+
+        .card-actions {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            display: none;
+            gap: 4px;
+        }
+
+        .card:hover .card-actions {
+            display: flex;
+        }
+
+        .btn-icon-small {
+            padding: 4px;
+            font-size: 12px;
+            background: rgba(255,255,255,0.8);
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-icon-small:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        /* ========== TOPIC VIEW ========== */
+        .topic-view {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            margin-top: 20px;
+        }
+
+        .topic-view.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ========== TOPIC POPUP ========== */
+        .topic-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .topic-popup.active {
+            display: flex;
+        }
+
+        .topic-popup-content {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            animation: slideInDown 0.3s ease;
+            position: relative;
+        }
+
+        .topic-popup-header {
+            position: sticky;
+            top: 0;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 20px 20px 0 0;
+            z-index: 10;
+        }
+
+        .topic-popup-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s;
+            color: var(--secondary);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .topic-popup-close:hover {
+            background: var(--light);
+            color: var(--danger);
+            transform: scale(1.1);
+        }
+
+        .topic-popup-body {
+            padding: 0 30px 30px 30px;
+        }
+
+        /* ========== DASHBOARD ========== */
+        .dashboard-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2500;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .dashboard-popup.active {
+            display: flex;
+        }
+
+        .dashboard-content {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: slideInDown 0.4s ease;
+        }
+
+        .dashboard-header {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .dashboard-title {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .dashboard-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .dashboard-close:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.1);
+        }
+
+        .dashboard-body {
+            padding: 30px;
+        }
+
+        /* ========== STATS CARDS ========== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--primary);
+        }
+
+        .stat-card.posts::before {
+            background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+        }
+
+        .stat-card.users::before {
+            background: linear-gradient(90deg, #10b981, #059669);
+        }
+
+        .stat-card.views::before {
+            background: linear-gradient(90deg, #f59e0b, #d97706);
+        }
+
+        .stat-card.categories::before {
+            background: linear-gradient(90deg, #8b5cf6, #7c3aed);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .stat-title {
+            color: var(--secondary);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-icon {
+            font-size: 24px;
+            opacity: 0.7;
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 8px;
+            line-height: 1;
+        }
+
+        .stat-change {
+            font-size: 12px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .stat-change.positive {
+            color: var(--success);
+        }
+
+        .stat-change.negative {
+            color: var(--danger);
+        }
+
+        /* ========== DASHBOARD SECTIONS ========== */
+        .dashboard-sections {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .dashboard-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .recent-posts {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .recent-post {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .recent-post:hover {
+            background: var(--light);
+        }
+
+        .recent-post-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .recent-post-title {
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 14px;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .recent-post-meta {
+            font-size: 12px;
+            color: var(--secondary);
+            display: flex;
+            gap: 10px;
+        }
+
+        .category-badge {
+            font-size: 10px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* ========== QUICK ACTIONS ========== */
+        .quick-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .quick-action {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .quick-action:hover {
+            border-color: var(--primary);
+            background: var(--light);
+            transform: translateX(5px);
+        }
+
+        .quick-action-icon {
+            font-size: 20px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .quick-action-text {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* ========== RESPONSIVE DASHBOARD ========== */
+        @media (max-width: 768px) {
+            .dashboard-content {
+                max-width: calc(100vw - 20px);
+                margin: 0 10px;
+            }
+            
+            .dashboard-body {
+                padding: 20px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 15px;
+            }
+            
+            .stat-card {
+                padding: 20px;
+            }
+            
+            .stat-value {
+                font-size: 28px;
+            }
+            
+            .dashboard-sections {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .dashboard-section {
+                padding: 20px;
+            }
+        }
+
+        .breadcrumb {
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+            color: var(--secondary);
+        }
+
+        .breadcrumb span {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .breadcrumb span:hover {
+            color: var(--primary);
+        }
+
+        .topic-header {
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        .topic-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .topic-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .topic-info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: var(--secondary);
+        }
+
+        .topic-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .topic-keywords .keyword-tag {
+            background: var(--primary);
+            color: white;
+            padding: 6px 12px;
+        }
+
+        .topic-content {
+            line-height: 1.8;
+            font-size: 16px;
+            color: var(--text);
+            margin-bottom: 40px;
+        }
+
+        .topic-content h3 {
+            color: var(--dark);
+            margin: 30px 0 15px 0;
+            font-size: 22px;
+            font-weight: 600;
+        }
+
+        .topic-content p {
+            margin-bottom: 16px;
+        }
+
+        .topic-content ul,
+        .topic-content ol {
+            margin: 16px 0 16px 30px;
+        }
+
+        .topic-content li {
+            margin-bottom: 8px;
+        }
+
+        .topic-content strong {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .topic-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .feedback {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .feedback-text {
+            color: var(--secondary);
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        .feedback-btn {
+            padding: 10px 18px;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .feedback-btn:hover {
+            background: var(--light);
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .topic-edit-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .topic-related {
+            border-top: 1px solid var(--border);
+            padding-top: 25px;
+        }
+
+        .topic-related h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            color: var(--dark);
+        }
+
+        .related-links {
+            display: grid;
+            gap: 15px;
+        }
+
+        .related-link {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        .related-link:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ========== MODAL ========== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-xl);
+            animation: slideInDown 0.3s ease;
+        }
+
+        .modal h2 {
+            margin-bottom: 30px;
+            font-size: 28px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .modal input,
+        .modal select,
+        .modal textarea {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .modal input:focus,
+        .modal select:focus,
+        .modal textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .modal textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .form-actions button:first-child {
+            background: var(--light);
+            color: var(--secondary);
+            border: 1px solid var(--border);
+        }
+
+        .form-actions .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .form-actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        /* ========== STATUS INDICATORS ========== */
+        .db-status {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 26, 46, 0.9);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-size: 13px;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .db-status:hover {
+            transform: translateY(-2px);
+        }
+
+        .save-status {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 1000;
+            animation: slideInLeft 0.3s ease;
+        }
+
+        .save-indicator {
+            font-size: 16px;
+            animation: pulse 1s infinite;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        @keyframes slideInLeft {
+            from { 
+                opacity: 0; 
+                transform: translateX(-100px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        @keyframes slideInRight {
+            from { 
+                opacity: 0; 
+                transform: translateX(100px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateX(0); 
+            }
+        }
+
+        @keyframes slideInDown {
+            from { 
+                opacity: 0; 
+                transform: translateY(-100px); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+
+        @keyframes fadeOut {
+            from { opacity: 1; transform: translateY(0); }
+            to { opacity: 0; transform: translateY(-20px); }
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 1024px) {
+            .hero-title {
+                font-size: 48px;
+            }
+            
+            .quick-access {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 12px;
+            }
+            
+            .search-box {
+                font-size: 15px;
+                padding: 18px 60px 18px 20px;
+            }
+            
+            .search-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 36px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .quick-access {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+                margin-bottom: 30px;
+            }
+            
+            .quick-btn {
+                padding: 12px 16px;
+                font-size: 13px;
+            }
+            
+            .search-container {
+                max-width: 90%;
+            }
+            
+            .board-view {
+                grid-template-columns: 1fr;
+            }
+            
+            .result-item {
+                padding: 18px;
+            }
+            
+            .result-title {
+                font-size: 18px;
+            }
+            
+            .view-controls {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
+            }
+            
+            .modal-content {
+                padding: 25px;
+            }
+            
+            .header-content {
+                padding: 0 15px;
+                gap: 10px;
+            }
+            
+            .header-actions {
+                gap: 10px;
+            }
+            
+            .compact-search {
+                max-width: 250px;
+                margin: 0 10px;
+            }
+            
+            .header-btn {
+                padding: 8px 12px;
+                font-size: 13px;
+                height: 36px;
+            }
+            
+            .status-bar {
+                gap: 10px;
+                font-size: 12px;
+            }
+            
+            .logo {
+                font-size: 24px;
+            }
+            
+            .header.compact .logo {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .quick-access {
+                grid-template-columns: 1fr;
+                gap: 8px;
+                margin-bottom: 25px;
+            }
+            
+            .search-box {
+                padding: 16px 50px 16px 16px;
+                font-size: 14px;
+            }
+            
+            .search-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+            }
+            
+            .result-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            
+            .keyword-tag {
+                font-size: 10px;
+                padding: 2px 6px;
+            }
+            
+            .topic-edit-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .result-stats {
+                flex-direction: column;
+                gap: 5px;
+                align-items: flex-start;
+            }
+            
+            .header-content {
+                padding: 0 10px;
+                gap: 8px;
+            }
+            
+            .header-actions {
+                gap: 8px;
+            }
+            
+            .compact-search {
+                max-width: 180px;
+                margin: 0 5px;
+            }
+            
+            .header-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+                height: 32px;
+            }
+            
+            .status-bar {
+                gap: 8px;
+                font-size: 11px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+            
+            .header.compact .logo {
+                font-size: 18px;
+            }
+            
+            .topic-popup {
+                padding: 10px;
+            }
+            
+            .topic-popup-content {
+                max-width: calc(100vw - 20px);
+                max-height: calc(100vh - 20px);
+                border-radius: 15px;
+            }
+            
+            .topic-popup-header {
+                padding: 15px 20px;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .topic-popup-header h2 {
+                font-size: 18px;
+            }
+            
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-content">
+            <div class="logo" onclick="showHome()">BINAH</div>
+            <div class="compact-search" id="compactSearchContainer" style="display: none; flex: 1; max-width: 400px; margin: 0 20px; height: 100%; align-items: center;">
+                <input type="text" id="compactSearchInput" placeholder="Buscar..." onclick="handleCompactSearchClick()" onkeypress="if(event.key==='Enter') performSearch()" style="width: 100%; height: 40px; padding: 0 16px; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; color: var(--dark); font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" id="latestPostsBtn" onclick="showLatestPosts()">🕒 Últimos Posts</button>
+                <button class="header-btn" id="dashboardBtn" onclick="openDashboard()" style="display: none;">📊 Dashboard</button>
+                <button class="header-btn" id="newTopicBtn" onclick="openNewTopicModal()" style="display: none;">➕ Novo</button>
+                <button class="header-btn" id="viewToggleBtn" onclick="toggleView()">📊 Board</button>
+                <div class="status-bar">
+                    <div class="db-indicator" id="dbIndicator"></div>
+                    <span id="dbStatusText">Local</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero-section" id="heroSection">
+        <div class="container">
+            <p class="hero-subtitle">Encontre soluções rápidas e precisas.</p>
+            
+            <!-- Quick Access - ACIMA da busca -->
+            <div class="quick-access" id="quickAccess">
+                <button class="quick-btn" onclick="quickSearch('Máquinas')">⚙️ Máquinas</button>
+                <button class="quick-btn" onclick="quickSearch('Dosadoras')">💧 Dosadoras</button>
+                <button class="quick-btn" onclick="quickSearch('Manutenção')">🔧 Manutenção</button>
+                <button class="quick-btn" onclick="quickSearch('Erros')">⚠️ Erros</button>
+                <button class="quick-btn" onclick="quickSearch('Procedimentos')">📋 Procedimentos</button>
+            </div>
+
+            <!-- Search Container - ABAIXO dos botões -->
+            <div class="search-container">
+                <input type="text" 
+                       class="search-box" 
+                       id="mainSearchInput" 
+                       placeholder="Digite sua busca... (ex: dosadora, erro, máquina)"
+                       onkeypress="if(event.key==='Enter') performSearch()">
+                <button class="search-btn" onclick="performSearch()">🔍</button>
+                
+                <!-- Live Search Results -->
+                <div class="live-search-results" id="liveSearchResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content" id="mainContent">
+            <!-- View Controls -->
+            <div class="view-controls">
+                <div class="results-info">
+                    <h2>Resultados da Busca</h2>
+                    <div class="results-count"><span id="resultCount">0</span> tópicos encontrados</div>
+                </div>
+                <div class="view-options">
+                    <!-- Botões movidos para header -->
+                </div>
+            </div>
+
+            <!-- Results List View -->
+            <div class="results-list-view active" id="resultsListView"></div>
+
+            <!-- Board View -->
+            <div class="board-view" id="boardView">
+                <div class="board-column" data-category="Máquinas" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>⚙️ Máquinas</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+                <div class="board-column" data-category="Dosadoras" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>💧 Dosadoras</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+                <div class="board-column" data-category="Manutenção" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>🔧 Manutenção</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+                <div class="board-column" data-category="Erros" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>⚠️ Erros</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+                <div class="board-column" data-category="Procedimentos" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>📋 Procedimentos</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+            </div>
+
+            <!-- Topic View -->
+            <div class="topic-view" id="topicView"></div>
+        </div>
+    </div>
+
+    <!-- New Topic Modal -->
+    <div class="modal" id="newTopicModal">
+        <div class="modal-content">
+            <h2>Novo Tópico</h2>
+            <form onsubmit="saveTopic(event)">
+                <input type="text" id="topicTitle" placeholder="Título do tópico *" required>
+                <select id="topicCategory" required>
+                    <option value="">Selecione a categoria *</option>
+                    <option value="Máquinas">⚙️ Máquinas</option>
+                    <option value="Dosadoras">💧 Dosadoras</option>
+                    <option value="Manutenção">🔧 Manutenção</option>
+                    <option value="Erros">⚠️ Erros</option>
+                    <option value="Procedimentos">📋 Procedimentos</option>
+                </select>
+                <input type="text" id="topicKeywords" placeholder="Palavras-chave (separadas por vírgula)">
+                <textarea id="topicContent" rows="8" placeholder="Conteúdo do tópico *" required></textarea>
+                <div class="form-actions">
+                    <button type="button" onclick="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Topic Popup -->
+    <div class="topic-popup" id="topicPopup" onclick="closeTopicPopup(event)">
+        <div class="topic-popup-content" onclick="event.stopPropagation()">
+            <div class="topic-popup-header">
+                <h2 style="margin: 0; color: var(--dark); font-size: 20px;">📄 Visualizar Tópico</h2>
+                <button class="topic-popup-close" onclick="closeTopicPopup()" title="Fechar">✕</button>
+            </div>
+            <div class="topic-popup-body" id="topicPopupContent">
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Popup -->
+    <div class="dashboard-popup" id="dashboardPopup" onclick="closeDashboard(event)">
+        <div class="dashboard-content" onclick="event.stopPropagation()">
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    🏷️ Dashboard Administrativo
+                </div>
+                <button class="dashboard-close" onclick="closeDashboard()" title="Fechar">✕</button>
+            </div>
+            <div class="dashboard-body">
+                <!-- Stats Cards -->
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card posts">
+                        <div class="stat-header">
+                            <div class="stat-title">Total de Posts</div>
+                            <div class="stat-icon">📄</div>
+                        </div>
+                        <div class="stat-value" id="totalPosts">0</div>
+                        <div class="stat-change positive" id="postsChange">
+                            ↗️ +0 esta semana
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card users">
+                        <div class="stat-header">
+                            <div class="stat-title">Usuários Ativos</div>
+                            <div class="stat-icon">👥</div>
+                        </div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-change positive" id="usersChange">
+                            ↗️ +0 novos
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card views">
+                        <div class="stat-header">
+                            <div class="stat-title">Visualizações</div>
+                            <div class="stat-icon">👁️</div>
+                        </div>
+                        <div class="stat-value" id="totalViews">0</div>
+                        <div class="stat-change positive" id="viewsChange">
+                            ↗️ +0 hoje
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card categories">
+                        <div class="stat-header">
+                            <div class="stat-title">Categorias</div>
+                            <div class="stat-icon">📂</div>
+                        </div>
+                        <div class="stat-value" id="totalCategories">5</div>
+                        <div class="stat-change" id="categoriesChange">
+                            ✅ Todas ativas
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Sections -->
+                <div class="dashboard-sections">
+                    <!-- Recent Posts -->
+                    <div class="dashboard-section">
+                        <div class="section-title">
+                            📋 Posts Recentes
+                        </div>
+                        <div class="recent-posts" id="recentPostsList">
+                            <!-- Posts will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="dashboard-section">
+                        <div class="section-title">
+                            ⚡ Ações Rápidas
+                        </div>
+                        <div class="quick-actions">
+                            <div class="quick-action" onclick="openNewTopicModal(); closeDashboard();">
+                                <div class="quick-action-icon">➕</div>
+                                <div class="quick-action-text">Criar Novo Post</div>
+                            </div>
+                            <div class="quick-action" onclick="showLatestPosts(); closeDashboard();">
+                                <div class="quick-action-icon">🕒</div>
+                                <div class="quick-action-text">Ver Últimos Posts</div>
+                            </div>
+                            <div class="quick-action" onclick="exportData();">
+                                <div class="quick-action-icon">📊</div>
+                                <div class="quick-action-text">Exportar Dados</div>
+                            </div>
+                            <div class="quick-action" onclick="showSystemInfo();">
+                                <div class="quick-action-icon">⚙️</div>
+                                <div class="quick-action-text">Info do Sistema</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Database Status Indicator -->
+    <div class="db-status" onclick="openDbModal()">
+        <div class="db-indicator" id="dbIndicator"></div>
+        <span id="dbStatusText">Database: Modo Local</span>
+    </div>
+
+    <!-- Save Status Indicator -->
+    <div class="save-status" id="saveStatus">
+        <div class="save-indicator">💾</div>
+        <span>Salvando...</span>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/app.js"></script>
+    
+    <!-- Authentication Check -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar autenticação antes de carregar a aplicação
+            if (!window.binahAuth.isLoggedIn()) {
+                console.log('🚫 Usuário não autenticado - redirecionando para login');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            console.log('✅ Usuário autenticado:', window.binahAuth.getCurrentUser().username);
+            
+            // Mostrar botões de admin se necessário
+            const currentUser = window.binahAuth.getCurrentUser();
+            if (currentUser.role === 'admin') {
+                const newTopicBtn = document.getElementById('newTopicBtn');
+                const dashboardBtn = document.getElementById('dashboardBtn');
+                if (newTopicBtn) newTopicBtn.style.display = 'block';
+                if (dashboardBtn) dashboardBtn.style.display = 'block';
+                console.log('🔑 Permissões de administrador ativadas');
+            } else {
+                console.log('👤 Usuário comum - acesso somente leitura');
+            }
+            
+            // Adicionar informações do usuário no header
+            const userInfo = document.createElement('div');
+            userInfo.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 13px;
+                color: rgba(255,255,255,0.8);
+            `;
+            
+            userInfo.innerHTML = `
+                <span>👤 ${currentUser.username} ${currentUser.role === 'admin' ? '(Admin)' : '(Usuário)'}</span>
+                <button onclick="logout()" style="
+                    background: rgba(255,255,255,0.1);
+                    color: white;
+                    border: 1px solid rgba(255,255,255,0.2);
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    transition: all 0.3s;
+                " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    🚪 Sair
+                </button>
+            `;
+            
+            // Adicionar aviso para usuários não-admin
+            if (currentUser.role !== 'admin') {
+                const readOnlyNotice = document.createElement('div');
+                readOnlyNotice.style.cssText = `
+                    position: fixed;
+                    top: 90px;
+                    right: 20px;
+                    background: rgba(245, 158, 11, 0.9);
+                    color: white;
+                    padding: 12px 16px;
+                    border-radius: 10px;
+                    font-size: 14px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                    z-index: 1000;
+                    animation: slideInRight 0.5s ease;
+                `;
+                readOnlyNotice.innerHTML = '📖 Modo somente leitura - Apenas admins podem criar/editar tópicos';
+                document.body.appendChild(readOnlyNotice);
+                
+                // Auto hide after 5 seconds
+                setTimeout(() => {
+                    readOnlyNotice.style.animation = 'fadeOut 0.3s ease';
+                    setTimeout(() => readOnlyNotice.remove(), 300);
+                }, 5000);
+            }
+            
+            const statusBar = document.querySelector('.status-bar');
+            if (statusBar) {
+                statusBar.appendChild(userInfo);
+            }
+        });
+
+        // Função global de logout
+        function logout() {
+            if (confirm('Deseja realmente sair do sistema?')) {
+                window.binahAuth.logout();
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Monitoramento de segurança contínuo
+        setInterval(() => {
+            if (!window.binahAuth.isLoggedIn()) {
+                console.warn('🚨 Sessão expirada - redirecionando para login');
+                window.location.href = 'login.html';
+            }
+        }, 30000); // Verifica a cada 30 segundos
+
+        // Proteção contra manipulação de sessão
+        (function() {
+            const originalFetch = window.fetch;
+            window.fetch = function(...args) {
+                if (!window.binahAuth.isLoggedIn()) {
+                    console.error('🚫 Acesso negado - usuário não autenticado');
+                    window.location.href = 'login.html';
+                    return Promise.reject('Unauthorized');
+                }
+                return originalFetch.apply(this, arguments);
+            };
+        })();
+    </script>
+
+<!-- Modal para exibir tópicos -->
+<div id="topicModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+  <div style="background:#fff; padding:20px; max-width:800px; width:90%; max-height:90%; overflow:auto; border-radius:10px; position:relative;">
+    <span id="closeModal" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:22px;">&times;</span>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll(".topic-link").forEach(el => {
+        el.addEventListener("click", function(e) {
+            e.preventDefault();
+            let content = document.querySelector(this.getAttribute("href"));
+            if(content){
+                document.getElementById("modalContent").innerHTML = content.innerHTML;
+                document.getElementById("topicModal").style.display = "flex";
+            }
+        });
+    });
+    document.getElementById("closeModal").addEventListener("click", function(){
+        document.getElementById("topicModal").style.display = "none";
+    });
+});
+</script>
+
+</body>
+</html>

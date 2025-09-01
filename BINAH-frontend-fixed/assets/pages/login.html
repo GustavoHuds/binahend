@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BINAH - Login</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self' http://localhost:3001; object-src 'none'; base-uri 'self';">
+    <meta name="description" content="BINAH - Base de Conhecimento Inteligente - Sistema de autenticação">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="../css/login.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">BINAH</div>
+            <div class="auth-subtitle">Sistema de Conhecimento Inteligente</div>
+        </div>
+
+        <!-- Alert message -->
+        <div class="alert" id="alertMessage"></div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+            <div class="auth-tab active" onclick="switchTab('login')">Login</div>
+            <div class="auth-tab" onclick="switchTab('register')">Cadastro</div>
+        </div>
+
+        <!-- Login Form -->
+        <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label class="form-label" for="loginUsername">Usuário</label>
+                <input type="text" class="form-input" id="loginUsername" placeholder="Digite seu usuário" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label" for="loginPassword">Senha</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Digite sua senha" required>
+            </div>
+
+            <div class="remember-group">
+                <input type="checkbox" class="remember-checkbox" id="rememberMe">
+                <label class="remember-label" for="rememberMe">Lembrar de mim</label>
+            </div>
+
+            <button type="submit" class="auth-button" id="loginButton">
+                <div class="button-loader"></div>
+                Entrar
+            </button>
+        </form>
+
+        <!-- Register Form -->
+        <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+            <!-- Informações sobre padrões de usuário e senha -->
+            <div class="info-box" style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 12px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                    <span style="color: #0ea5e9; font-size: 16px;">ℹ️</span>
+                    <span style="font-weight: 600; color: #0369a1; font-size: 14px;">Padrões de Cadastro</span>
+                </div>
+                <div style="font-size: 13px; color: #0369a1; line-height: 1.4;">
+                    <div><strong>Usuário:</strong> Formato nome.sobrenome</div>
+                    <div><strong>Senha:</strong> Mínimo 12 caracteres</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Usuário</label>
+                <input type="text" class="form-input" id="registerUsername" placeholder="ex: joao.silva" required pattern="^[a-z]+\.[a-z]+$" title="Use o formato nome.sobrenome (apenas letras minúsculas)">
+                <small class="form-help" style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">Formato: nome.sobrenome (sem acentos ou números)</small>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Senha</label>
+                <input type="password" class="form-input" id="registerPassword" placeholder="Mínimo 12 caracteres" required minlength="12">
+                <small class="form-help" style="color: #64748b; font-size: 12px; margin-top: 4px; display: block;">Mínimo 12 caracteres para maior segurança</small>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Confirmar Senha</label>
+                <input type="password" class="form-input" id="confirmPassword" placeholder="Digite a mesma senha" required minlength="12">
+            </div>
+
+            <button type="submit" class="auth-button" id="registerButton">
+                <div class="button-loader"></div>
+                Criar Conta
+            </button>
+        </form>
+
+        <!-- Security Info -->
+        <div class="security-info">
+            <div class="security-title">
+                🛡️ Segurança do Sistema
+            </div>
+            <ul class="security-list">
+                <li>Senhas são criptografadas e seguras</li>
+                <li>Sessões têm tempo limite de segurança</li>
+                <li>Sistema monitora tentativas de acesso</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Modal for topics (legacy support) -->
+    <div id="topicModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:#fff; padding:20px; max-width:800px; width:90%; max-height:90%; overflow:auto; border-radius:10px; position:relative;">
+            <span id="closeModal" style="position:absolute; top:10px; right:15px; cursor:pointer; font-size:22px;">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="../js/auth.js"></script>
+    <script src="../js/login.js"></script>
+</body>
+</html>

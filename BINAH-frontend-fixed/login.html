@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BINAH - Login</title>
+    <style>
+        /* ========== VARIÁVEIS ========== */
+        :root {
+            --primary: #6366f1;
+            --primary-light: #8b5cf6;
+            --secondary: #64748b;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+            --text: #0f172a;
+            --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+            --shadow: 0 4px 6px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px rgba(0,0,0,0.15);
+            --shadow-xl: 0 20px 40px rgba(0,0,0,0.2);
+        }
+
+        /* ========== RESET ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* ========== CONTAINER ========== */
+        .auth-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 35px;
+            width: 100%;
+            max-width: 380px;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            animation: slideInUp 0.6s ease both;
+            overflow: visible;
+            margin: auto;
+        }
+
+        /* ========== HEADER ========== */
+        .auth-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .auth-subtitle {
+            color: var(--secondary);
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        /* ========== TABS ========== */
+        .auth-tabs {
+            display: flex;
+            margin-bottom: 30px;
+            background: var(--light);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .auth-tab.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .auth-tab:not(.active) {
+            color: var(--secondary);
+        }
+
+        .auth-tab:not(.active):hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* ========== FORMS ========== */
+        .auth-form {
+            display: none;
+        }
+
+        .auth-form.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 14px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input.error {
+            border-color: var(--danger);
+        }
+
+        /* ========== REMEMBER ME ========== */
+        .remember-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 25px;
+        }
+
+        .remember-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+        }
+
+        .remember-label {
+            font-size: 14px;
+            color: var(--secondary);
+            cursor: pointer;
+        }
+
+        /* ========== BUTTONS ========== */
+        .auth-button {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .auth-button:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .auth-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .button-loader {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 2px solid transparent;
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        .auth-button.loading .button-loader {
+            display: inline-block;
+        }
+
+        /* ========== ALERTS ========== */
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+            animation: slideInDown 0.3s ease;
+        }
+
+        .alert.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+
+        .alert.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .alert.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        /* ========== SECURITY NOTICE ========== */
+        .security-notice {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* ========== ANIMATIONS ========== */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ========== RESPONSIVE NOTEBOOKS ========== */
+        @media (max-height: 900px) {
+            body {
+                padding-top: 30px;
+                padding-bottom: 30px;
+                overflow-y: auto;
+            }
+            
+            .auth-container {
+                max-width: 350px;
+                max-height: calc(100vh - 60px);
+                padding: 30px;
+                overflow: visible;
+                box-sizing: border-box;
+            }
+            
+            .auth-logo {
+                font-size: 36px;
+                margin-bottom: 8px;
+            }
+            
+            .auth-subtitle {
+                font-size: 14px;
+                margin-bottom: 18px;
+            }
+            
+            .auth-header {
+                margin-bottom: 25px;
+            }
+            
+            .form-group {
+                margin-bottom: 18px;
+            }
+            
+            .form-input {
+                padding: 14px;
+                font-size: 15px;
+            }
+            
+            .auth-button {
+                padding: 14px;
+                font-size: 15px;
+            }
+            
+            .security-info {
+                margin-top: 20px;
+                padding: 12px;
+                margin-bottom: 0;
+            }
+        }
+
+        @media (max-height: 800px) {
+            body {
+                align-items: flex-start;
+                padding-top: 25px;
+                padding-bottom: 25px;
+                overflow-y: auto;
+            }
+            
+            .auth-container {
+                max-width: 340px;
+                max-height: none;
+                padding: 25px;
+                overflow: visible;
+                box-sizing: border-box;
+                margin-top: 0;
+                margin-bottom: 25px;
+            }
+            
+            .auth-logo {
+                font-size: 32px;
+                margin-bottom: 5px;
+            }
+            
+            .auth-subtitle {
+                font-size: 13px;
+                margin-bottom: 15px;
+            }
+            
+            .auth-header {
+                margin-bottom: 20px;
+            }
+            
+            .auth-tabs {
+                margin-bottom: 20px;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-input {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .auth-button {
+                padding: 12px;
+                font-size: 14px;
+            }
+            
+            .remember-group {
+                margin-bottom: 20px;
+            }
+            
+            .security-info {
+                margin-top: 15px;
+                padding: 10px;
+                margin-bottom: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .security-list li {
+                margin-bottom: 3px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .auth-container {
+                margin: 10px;
+                padding: 30px 25px;
+                max-width: 350px;
+            }
+            
+            .auth-logo {
+                font-size: 40px;
+            }
+            
+            .form-input {
+                padding: 14px;
+                font-size: 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+                overflow-y: auto;
+            }
+            
+            .auth-container {
+                margin: 0;
+                padding: 25px 20px;
+                max-height: none;
+                overflow: visible;
+                box-sizing: border-box;
+                width: 100%;
+                max-width: none;
+                margin-bottom: 20px;
+            }
+
+            .auth-logo {
+                font-size: 32px;
+            }
+            
+            .auth-subtitle {
+                font-size: 14px;
+            }
+            
+            .form-input {
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            .auth-button {
+                padding: 14px;
+                font-size: 15px;
+            }
+            
+            .security-info {
+                margin-top: 15px;
+                padding: 12px;
+                margin-bottom: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .security-list li {
+                margin-left: 12px;
+                font-size: 11px;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .auth-container {
+                padding: 20px 15px;
+            }
+            
+            .auth-logo {
+                font-size: 28px;
+            }
+        }
+
+        /* ========== BACKGROUND ANIMATION ========== */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(99, 102, 241, 0.2) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">BINAH</div>
+            <div class="auth-subtitle">Base de Conhecimento Inteligente</div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div class="alert" id="alertMessage"></div>
+
+        <!-- Tabs -->
+        <div class="auth-tabs">
+            <div class="auth-tab active" onclick="switchTab('login')">Login</div>
+            <div class="auth-tab" onclick="switchTab('register')">Cadastro</div>
+        </div>
+
+        <!-- Login Form -->
+        <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label class="form-label">Usuário</label>
+                <input type="text" class="form-input" id="loginUsername" placeholder="Digite seu usuário" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Senha</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="Digite sua senha" required>
+            </div>
+
+            <div class="remember-group">
+                <input type="checkbox" class="remember-checkbox" id="rememberMe">
+                <label class="remember-label" for="rememberMe">Lembrar de mim</label>
+            </div>
+
+            <button type="submit" class="auth-button" id="loginButton">
+                <div class="button-loader"></div>
+                Entrar
+            </button>
+        </form>
+
+        <!-- Register Form -->
+        <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label class="form-label">Usuário</label>
+                <input type="text" class="form-input" id="registerUsername" placeholder="Escolha um usuário" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Senha</label>
+                <input type="password" class="form-input" id="registerPassword" placeholder="Crie uma senha" required minlength="4">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Confirmar Senha</label>
+                <input type="password" class="form-input" id="confirmPassword" placeholder="Confirme sua senha" required minlength="4">
+            </div>
+
+            <button type="submit" class="auth-button" id="registerButton">
+                <div class="button-loader"></div>
+                Criar Conta
+            </button>
+        </form>
+
+        <!-- Security Notice -->
+        <div class="security-notice">
+            🛡️ Ambiente Seguro
+        </div>
+    </div>
+
+    <script src="assets/js/auth.js"></script>
+    <script>
+        // Switch between login and register tabs
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            if (event && event.target) {
+                event.target.classList.add('active');
+            } else {
+                // If called programmatically, find the tab button
+                const targetTab = Array.from(document.querySelectorAll('.auth-tab')).find(t => t.textContent.toLowerCase().includes(tab));
+                if (targetTab) targetTab.classList.add('active');
+            }
+
+            // Update forms
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.getElementById(tab + 'Form').classList.add('active');
+
+            // Clear alerts
+            hideAlert();
+            
+            // Update browser history for better navigation
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tab);
+            window.history.pushState({tab: tab}, '', url.toString());
+        }
+
+        // Show alert message
+        function showAlert(message, type = 'error') {
+            const alert = document.getElementById('alertMessage');
+            alert.textContent = message;
+            alert.className = `alert ${type} show`;
+
+            // Auto hide after 5 seconds
+            setTimeout(() => hideAlert(), 5000);
+        }
+
+        // Hide alert message
+        function hideAlert() {
+            const alert = document.getElementById('alertMessage');
+            alert.classList.remove('show');
+        }
+
+        // Handle login form submission
+        async function handleLogin(event) {
+            event.preventDefault();
+            
+            const button = document.getElementById('loginButton');
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            if (!username || !password) {
+                showAlert('Por favor, preencha todos os campos', 'error');
+                return;
+            }
+
+            // Show loading state
+            button.classList.add('loading');
+            button.disabled = true;
+            hideAlert();
+
+            try {
+                const result = await window.binahAuth.login(username, password, rememberMe);
+                
+                if (result.success) {
+                    showAlert('Login realizado com sucesso! Redirecionando...', 'success');
+                    
+                    // Redirect after success
+                    setTimeout(() => {
+                        window.location.href = 'index.html';
+                    }, 1500);
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Erro interno do sistema. Tente novamente.', 'error');
+                console.error('Login error:', error);
+            } finally {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+
+        // Handle register form submission
+        async function handleRegister(event) {
+            event.preventDefault();
+            
+            const button = document.getElementById('registerButton');
+            const username = document.getElementById('registerUsername').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!username || !password || !confirmPassword) {
+                showAlert('Por favor, preencha todos os campos', 'error');
+                return;
+            }
+
+            // Show loading state
+            button.classList.add('loading');
+            button.disabled = true;
+            hideAlert();
+
+            try {
+                const result = await window.binahAuth.register(username, password, confirmPassword);
+                
+                if (result.success) {
+                    showAlert('Conta criada com sucesso!', 'success');
+                    
+                    // Switch to login tab immediately after success
+                    setTimeout(() => {
+                        switchTab('login');
+                        document.getElementById('loginUsername').value = username;
+                        document.getElementById('registerForm').reset();
+                        hideAlert();
+                    }, 1000);
+                } else {
+                    showAlert(result.message, 'error');
+                }
+            } catch (error) {
+                showAlert('Erro interno do sistema. Tente novamente.', 'error');
+                console.error('Register error:', error);
+            } finally {
+                button.classList.remove('loading');
+                button.disabled = false;
+            }
+        }
+
+        // Handle browser back button
+        window.addEventListener('popstate', (event) => {
+            if (event.state && event.state.tab) {
+                switchTabWithoutHistory(event.state.tab);
+            } else {
+                // Default to login tab
+                switchTabWithoutHistory('login');
+            }
+        });
+
+        // Switch tab without updating history (for popstate handling)
+        function switchTabWithoutHistory(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+            const targetTab = Array.from(document.querySelectorAll('.auth-tab')).find(t => t.textContent.toLowerCase().includes(tab));
+            if (targetTab) targetTab.classList.add('active');
+
+            // Update forms
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+            document.getElementById(tab + 'Form').classList.add('active');
+
+            // Clear alerts
+            hideAlert();
+        }
+
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.binahAuth.isLoggedIn()) {
+                showAlert('Você já está logado! Redirecionando...', 'success');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+                return;
+            }
+
+            // Check URL for initial tab
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialTab = urlParams.get('tab') || 'login';
+            if (initialTab !== 'login') {
+                switchTabWithoutHistory(initialTab);
+            }
+
+            // Auto-focus first input
+            document.getElementById('loginUsername').focus();
+
+            // Security monitoring
+            console.clear();
+            console.log('%c🛡️ Sistema de Segurança BINAH', 'color: #6366f1; font-size: 16px; font-weight: bold;');
+            console.log('%cTentativas de manipulação serão registradas e bloqueadas.', 'color: #ef4444;');
+        });
+
+        // Additional security measures
+        (function() {
+            // Disable right-click context menu
+            document.addEventListener('contextmenu', e => e.preventDefault());
+            
+            // Disable common developer shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'F12' || 
+                    (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                    (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+                    (e.ctrlKey && e.key === 'U')) {
+                    e.preventDefault();
+                    console.clear();
+                    console.warn('🚨 Acesso negado - Sistema protegido');
+                    return false;
+                }
+            });
+
+            // Monitor for bypass attempts
+            const originalLog = console.log;
+            console.log = function(...args) {
+                if (args.some(arg => typeof arg === 'string' && 
+                    (arg.includes('bypass') || arg.includes('hack') || arg.includes('inject')))) {
+                    console.warn('🚨 Tentativa de bypass detectada');
+                    return;
+                }
+                originalLog.apply(console, arguments);
+            };
+        })();
+    </script>
+</body>
+</html>

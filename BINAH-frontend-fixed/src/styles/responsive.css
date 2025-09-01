@@ -1,0 +1,554 @@
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+/* Mobile First Approach */
+
+/* ========== TABLET STYLES (768px and up) ========== */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+    
+    /* Header */
+    .header-content {
+        padding: 0 15px;
+        gap: 15px;
+    }
+    
+    .logo {
+        font-size: 24px;
+    }
+    
+    .header.compact .logo {
+        font-size: 20px;
+    }
+    
+    .header-actions {
+        gap: 10px;
+    }
+    
+    .header-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+        height: 36px;
+    }
+    
+    .status-bar {
+        gap: 10px;
+        font-size: 12px;
+    }
+    
+    .compact-search {
+        max-width: 250px;
+        margin: 0 10px;
+    }
+    
+    /* Hero Section */
+    .hero-title {
+        font-size: 36px;
+    }
+    
+    .hero-subtitle {
+        font-size: 16px;
+    }
+    
+    .quick-access {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        max-width: 100%;
+    }
+    
+    .quick-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+    
+    .search-box {
+        padding: 18px 60px 18px 20px;
+        font-size: 16px;
+    }
+    
+    .search-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    /* Results */
+    .view-controls {
+        flex-direction: column;
+        gap: 20px;
+        align-items: stretch;
+    }
+    
+    .results-info h2 {
+        font-size: 24px;
+    }
+    
+    .view-options {
+        justify-content: center;
+    }
+    
+    .result-item {
+        padding: 20px;
+    }
+    
+    .result-header {
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+    
+    .result-title {
+        font-size: 18px;
+    }
+    
+    .result-meta {
+        gap: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .result-actions {
+        align-self: flex-end;
+        margin-top: 10px;
+    }
+    
+    .result-keywords {
+        margin-top: 10px;
+    }
+    
+    /* Board View */
+    .board-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    /* Modals */
+    .modal {
+        padding: 10px;
+    }
+    
+    .modal-content,
+    .topic-popup-content,
+    .dashboard-content {
+        max-width: calc(100vw - 20px);
+        max-height: calc(100vh - 20px);
+        border-radius: 15px;
+    }
+    
+    .modal-header,
+    .topic-popup-header,
+    .dashboard-header {
+        padding: 15px 20px;
+        border-radius: 15px 15px 0 0;
+    }
+    
+    .modal-title,
+    .topic-popup-header h2,
+    .dashboard-title {
+        font-size: 18px;
+    }
+    
+    .modal-body,
+    .topic-popup-body,
+    .dashboard-body {
+        padding: 0 20px 20px 20px;
+    }
+    
+    .modal-close,
+    .topic-popup-close,
+    .dashboard-close {
+        width: 36px;
+        height: 36px;
+        font-size: 20px;
+    }
+    
+    /* Topic Display */
+    .topic-title {
+        font-size: 24px;
+    }
+    
+    .topic-meta,
+    .topic-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .topic-edit-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    /* Forms */
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        justify-content: center;
+        width: 100%;
+    }
+}
+
+/* ========== MOBILE STYLES (480px and up) ========== */
+@media (max-width: 480px) {
+    /* Header */
+    .header-content {
+        gap: 10px;
+    }
+    
+    .logo {
+        font-size: 20px;
+    }
+    
+    .header.compact .logo {
+        font-size: 18px;
+    }
+    
+    .header-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        height: 32px;
+    }
+    
+    .status-bar {
+        gap: 8px;
+        font-size: 11px;
+    }
+    
+    .compact-search {
+        max-width: 180px;
+        margin: 0 5px;
+    }
+    
+    /* Hero Section */
+    .hero-section {
+        padding: 30px 15px;
+    }
+    
+    .hero-title {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+    
+    .hero-subtitle {
+        font-size: 14px;
+        margin-bottom: 30px;
+    }
+    
+    .quick-access {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 25px;
+    }
+    
+    .quick-btn {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+    
+    .search-container {
+        max-width: 100%;
+    }
+    
+    .search-box {
+        padding: 16px 55px 16px 18px;
+        font-size: 15px;
+    }
+    
+    .search-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+        right: 6px;
+    }
+    
+    /* Results */
+    .main-content {
+        padding: 15px 0;
+    }
+    
+    .view-controls {
+        padding: 15px 0;
+        margin-bottom: 20px;
+    }
+    
+    .results-info h2 {
+        font-size: 20px;
+    }
+    
+    .results-count {
+        font-size: 13px;
+    }
+    
+    .result-item {
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 12px;
+    }
+    
+    .result-title {
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+    
+    .result-preview {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+    
+    .result-stats {
+        font-size: 11px;
+        gap: 10px;
+    }
+    
+    .keyword-tag {
+        font-size: 10px;
+        padding: 3px 6px;
+    }
+    
+    /* Board View */
+    .board-column {
+        padding: 12px;
+    }
+    
+    .board-header {
+        font-size: 14px;
+        margin-bottom: 12px;
+        padding-bottom: 10px;
+    }
+    
+    .card {
+        padding: 12px;
+    }
+    
+    .card-title {
+        font-size: 13px;
+    }
+    
+    .card-preview {
+        font-size: 11px;
+    }
+    
+    .card-meta {
+        font-size: 10px;
+    }
+    
+    /* Live Search */
+    .live-search-results {
+        border-radius: 12px;
+        max-height: 300px;
+    }
+    
+    .live-result-item {
+        padding: 12px 15px;
+        gap: 10px;
+    }
+    
+    .live-result-title {
+        font-size: 13px;
+    }
+    
+    .live-result-meta {
+        font-size: 11px;
+        gap: 8px;
+    }
+    
+    /* Topic Display */
+    .topic-popup-header,
+    .topic-popup-body {
+        padding: 15px 20px;
+    }
+    
+    .topic-title {
+        font-size: 20px;
+        line-height: 1.2;
+    }
+    
+    .topic-content {
+        font-size: 14px;
+        line-height: 1.6;
+    }
+    
+    .topic-content h1 { font-size: 20px; }
+    .topic-content h2 { font-size: 18px; }
+    .topic-content h3 { font-size: 16px; }
+    .topic-content h4 { font-size: 15px; }
+    .topic-content h5 { font-size: 14px; }
+    .topic-content h6 { font-size: 13px; }
+    
+    .feedback-buttons {
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .feedback-btn {
+        padding: 8px 16px;
+        font-size: 13px;
+    }
+    
+    /* Related Topics */
+    .related-link {
+        padding: 12px 16px;
+    }
+    
+    /* Status Indicators */
+    .db-status {
+        bottom: 15px;
+        right: 15px;
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+    
+    .save-status {
+        top: 90px;
+        right: 15px;
+        padding: 10px 12px;
+        font-size: 12px;
+    }
+}
+
+/* ========== LANDSCAPE MOBILE (568px wide) ========== */
+@media (max-width: 568px) and (orientation: landscape) {
+    .hero-section {
+        min-height: auto;
+        padding: 20px 15px;
+    }
+    
+    .hero-title {
+        font-size: 24px;
+    }
+    
+    .hero-subtitle {
+        margin-bottom: 20px;
+    }
+    
+    .quick-access {
+        grid-template-columns: repeat(5, 1fr);
+        margin-bottom: 20px;
+    }
+    
+    .modal-content,
+    .topic-popup-content,
+    .dashboard-content {
+        max-height: 95vh;
+    }
+}
+
+/* ========== VERY SMALL SCREENS (320px) ========== */
+@media (max-width: 320px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    .header-content {
+        padding: 0 10px;
+    }
+    
+    .hero-section {
+        padding: 20px 10px;
+    }
+    
+    .hero-title {
+        font-size: 24px;
+    }
+    
+    .quick-access {
+        grid-template-columns: 1fr;
+        gap: 6px;
+    }
+    
+    .search-box {
+        padding: 14px 50px 14px 16px;
+        font-size: 14px;
+    }
+    
+    .search-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 14px;
+        right: 5px;
+    }
+    
+    .result-item {
+        padding: 12px;
+    }
+    
+    .modal-content,
+    .topic-popup-content,
+    .dashboard-content {
+        margin: 10px;
+    }
+}
+
+/* ========== PRINT STYLES ========== */
+@media print {
+    .header,
+    .quick-access,
+    .search-container,
+    .view-controls,
+    .result-actions,
+    .card-actions,
+    .topic-edit-actions,
+    .feedback-buttons,
+    .modal-close,
+    .topic-popup-close,
+    .dashboard-close,
+    .db-status,
+    .save-status {
+        display: none !important;
+    }
+    
+    body {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .main-content {
+        margin-top: 0 !important;
+    }
+    
+    .result-item {
+        border: 1px solid #ccc !important;
+        break-inside: avoid;
+    }
+    
+    .topic-popup-content,
+    .dashboard-content {
+        box-shadow: none !important;
+        border: 1px solid #ccc !important;
+    }
+}
+
+/* ========== HIGH CONTRAST MODE ========== */
+@media (prefers-contrast: high) {
+    :root {
+        --border: #000;
+        --shadow: 0 2px 4px rgba(0,0,0,0.3);
+        --shadow-lg: 0 4px 8px rgba(0,0,0,0.3);
+        --shadow-xl: 0 8px 16px rgba(0,0,0,0.3);
+    }
+    
+    .result-item:hover,
+    .card:hover {
+        border-color: #000;
+    }
+}
+
+/* ========== REDUCED MOTION ========== */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+    
+    .hero-title,
+    .hero-subtitle,
+    .quick-access,
+    .search-container {
+        animation: none !important;
+    }
+}

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BINAH - Base de Conhecimento Inteligente</title>
+    <link rel="stylesheet" href="src/styles/main.css">
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="header-content">
+            <div class="logo" onclick="showHome()">BINAH</div>
+            <div class="compact-search" id="compactSearchContainer" style="display: none; flex: 1; max-width: 400px; margin: 0 20px; height: 100%; align-items: center;">
+                <input type="text" id="compactSearchInput" placeholder="Buscar..." onclick="handleCompactSearchClick()" onkeypress="if(event.key==='Enter') performSearch()" style="width: 100%; height: 40px; padding: 0 16px; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,0,0,0.2); border-radius: 10px; color: var(--dark); font-size: 14px; box-sizing: border-box;">
+            </div>
+            <div class="header-actions">
+                <button class="header-btn" id="latestPostsBtn" onclick="showLatestPosts()">🕒 Últimos Posts</button>
+                <button class="header-btn" id="dashboardBtn" onclick="openDashboard()" style="display: none;">📊 Dashboard</button>
+                <button class="header-btn" id="newTopicBtn" onclick="openNewTopicModal()" style="display: none;">➕ Novo</button>
+                <button class="header-btn" id="viewToggleBtn" onclick="toggleView()">📊 Board</button>
+                <div class="status-bar" id="statusBar">
+                    <div class="db-indicator" id="dbIndicator" style="display: none;"></div>
+                    <span id="dbStatusText" style="display: none;">Local</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero-section" id="heroSection">
+        <div class="container">
+            <p class="hero-subtitle">Encontre soluções rápidas e precisas.</p>
+            
+            <!-- Quick Access - ACIMA da busca -->
+            <div class="quick-access" id="quickAccess">
+                <button class="quick-btn" onclick="quickSearch('Máquinas')">⚙️ Máquinas</button>
+                <button class="quick-btn" onclick="quickSearch('Dosadoras')">💧 Dosadoras</button>
+                <button class="quick-btn" onclick="quickSearch('Manutenção')">🔧 Manutenção</button>
+                <button class="quick-btn" onclick="quickSearch('Erros')">⚠️ Erros</button>
+                <button class="quick-btn" onclick="quickSearch('Procedimentos')">📋 Procedimentos</button>
+            </div>
+
+            <!-- Search Container - ABAIXO dos botões -->
+            <div class="search-container">
+                <input type="text" 
+                       class="search-box" 
+                       id="mainSearchInput" 
+                       placeholder="Digite sua busca... (ex: dosadora, erro, máquina)"
+                       onkeypress="if(event.key==='Enter') performSearch()">
+                <button class="search-btn" onclick="performSearch()">🔍</button>
+                
+                <!-- Live Search Results -->
+                <div class="live-search-results" id="liveSearchResults"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="main-content" id="mainContent">
+            <!-- View Controls -->
+            <div class="view-controls">
+                <div class="results-info">
+                    <h2>Resultados da Busca</h2>
+                    <div class="results-count"><span id="resultCount">0</span> tópicos encontrados</div>
+                </div>
+                <div class="view-options">
+                    <!-- Botões movidos para header -->
+                </div>
+            </div>
+
+            <!-- Results List View -->
+            <div class="results-list-view active" id="resultsListView"></div>
+
+            <!-- Board View -->
+            <div class="board-view" id="boardView">
+                <div class="board-column" data-category="Máquinas" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>⚙️ Máquinas</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+                <div class="board-column" data-category="Dosadoras" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>💧 Dosadoras</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+                <div class="board-column" data-category="Manutenção" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>🔧 Manutenção</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+                <div class="board-column" data-category="Erros" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>⚠️ Erros</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+                <div class="board-column" data-category="Procedimentos" ondrop="drop(event)" ondragover="allowDrop(event)">
+                    <div class="column-header">
+                        <span>📋 Procedimentos</span>
+                        <span class="column-count">0</span>
+                    </div>
+                    <div class="column-cards"></div>
+                </div>
+            </div>
+
+            <!-- Topic View -->
+            <div class="topic-view" id="topicView"></div>
+        </div>
+    </div>
+
+    <!-- New Topic Modal -->
+    <div class="modal" id="newTopicModal" onclick="closeModal(event)">
+        <div class="modal-content new-topic-modal" onclick="event.stopPropagation()">
+            <div class="new-topic-header">
+                <h2>📝 Criar Novo Tópico</h2>
+                <button onclick="closeModal()" class="close-btn">✕</button>
+            </div>
+            
+            <div class="new-topic-content">
+                <form onsubmit="saveTopic(event)" class="new-topic-form">
+                    <div class="form-section">
+                        <h3>Informações Básicas</h3>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <label for="topicTitle">Título do Tópico *</label>
+                                <input type="text" id="topicTitle" placeholder="Ex: Como configurar uma nova dosadora..." required>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="topicCategory">Categoria *</label>
+                                <select id="topicCategory" required>
+                                    <option value="">Selecione uma categoria</option>
+                                    <option value="Máquinas">⚙️ Máquinas</option>
+                                    <option value="Dosadoras">💧 Dosadoras</option>
+                                    <option value="Manutenção">🔧 Manutenção</option>
+                                    <option value="Erros">⚠️ Erros</option>
+                                    <option value="Procedimentos">📋 Procedimentos</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="topicKeywords">Palavras-chave</label>
+                                <input type="text" id="topicKeywords" placeholder="dosadora, configuração, calibração">
+                                <small>Separe as palavras por vírgula</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h3>Conteúdo</h3>
+                        <div class="form-group full-width">
+                            <label for="topicContent">Descrição Completa *</label>
+                            <textarea id="topicContent" rows="10" placeholder="Descreva detalhadamente o procedimento, solução ou informação..." required></textarea>
+                            <small>Use parágrafos para organizar melhor o conteúdo</small>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="button" onclick="closeModal()" class="btn-cancel">Cancelar</button>
+                        <button type="submit" class="btn-save">💾 Criar Tópico</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Topic Popup -->
+    <div class="topic-popup" id="topicPopup" onclick="closeTopicPopup(event)">
+        <div class="topic-popup-content" onclick="event.stopPropagation()">
+            <div class="topic-popup-header">
+                <h2 style="margin: 0; color: var(--dark); font-size: 20px;">📄 Visualizar Tópico</h2>
+                <button class="topic-popup-close" onclick="closeTopicPopup()" title="Fechar">✕</button>
+            </div>
+            <div class="topic-popup-body" id="topicPopupContent">
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard Popup -->
+    <div class="dashboard-popup" id="dashboardPopup" onclick="closeDashboard(event)">
+        <div class="dashboard-content" onclick="event.stopPropagation()">
+            <div class="dashboard-header">
+                <div class="dashboard-title">
+                    🏷️ Dashboard Administrativo
+                </div>
+                <button class="dashboard-close" onclick="closeDashboard()" title="Fechar">✕</button>
+            </div>
+            <div class="dashboard-body">
+                <!-- Stats Cards -->
+                <div class="stats-grid" id="statsGrid">
+                    <div class="stat-card posts">
+                        <div class="stat-header">
+                            <div class="stat-title">Total de Posts</div>
+                            <div class="stat-icon">📄</div>
+                        </div>
+                        <div class="stat-value" id="totalPosts">0</div>
+                        <div class="stat-change positive" id="postsChange">
+                            ↗️ +0 esta semana
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card users">
+                        <div class="stat-header">
+                            <div class="stat-title">Usuários Ativos</div>
+                            <div class="stat-icon">👥</div>
+                        </div>
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-change positive" id="usersChange">
+                            ↗️ +0 novos
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card views">
+                        <div class="stat-header">
+                            <div class="stat-title">Visualizações</div>
+                            <div class="stat-icon">👁️</div>
+                        </div>
+                        <div class="stat-value" id="totalViews">0</div>
+                        <div class="stat-change positive" id="viewsChange">
+                            ↗️ +0 hoje
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card categories">
+                        <div class="stat-header">
+                            <div class="stat-title">Categorias</div>
+                            <div class="stat-icon">📂</div>
+                        </div>
+                        <div class="stat-value" id="totalCategories">5</div>
+                        <div class="stat-change" id="categoriesChange">
+                            ✅ Todas ativas
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dashboard Sections -->
+                <div class="dashboard-sections">
+                    <!-- Recent Posts -->
+                    <div class="dashboard-section">
+                        <div class="section-title">
+                            📋 Posts Recentes
+                        </div>
+                        <div class="recent-posts" id="recentPostsList">
+                            <!-- Posts will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="dashboard-section">
+                        <div class="section-title">
+                            ⚡ Ações Rápidas
+                        </div>
+                        <div class="quick-actions">
+                            <div class="quick-action" onclick="openNewTopicModal(); closeDashboard();">
+                                <div class="quick-action-icon">➕</div>
+                                <div class="quick-action-text">Criar Novo Post</div>
+                            </div>
+                            <div class="quick-action" onclick="showLatestPosts(); closeDashboard();">
+                                <div class="quick-action-icon">🕒</div>
+                                <div class="quick-action-text">Ver Últimos Posts</div>
+                            </div>
+                            <div class="quick-action" onclick="exportData();">
+                                <div class="quick-action-icon">📊</div>
+                                <div class="quick-action-text">Exportar Dados</div>
+                            </div>
+                            <div class="quick-action" onclick="showSystemInfo();">
+                                <div class="quick-action-icon">⚙️</div>
+                                <div class="quick-action-text">Info do Sistema</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Profile Modal -->
+    <div class="modal" id="userProfileModal" onclick="closeUserProfile(event)">
+        <div class="modal-content profile-modal" onclick="event.stopPropagation()">
+            <!-- Header -->
+            <div class="profile-header">
+                <h2>👤 Meu Perfil</h2>
+                <button onclick="closeUserProfile()" class="close-btn">✕</button>
+            </div>
+            
+            <!-- Profile Content -->
+            <div class="profile-content">
+                <!-- User Card -->
+                <div class="profile-user-card">
+                    <div class="profile-avatar">👤</div>
+                    <h3 id="profileUsername">Usuário</h3>
+                    <span id="profileRole" class="profile-role-badge">Usuário</span>
+                    <p class="profile-join-date">Membro desde <span id="profileJoinDate">2024</span></p>
+                </div>
+                
+                <!-- Stats Grid -->
+                <div class="profile-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-number" id="profilePostsCount">0</div>
+                        <div class="stat-label">Tópicos Criados</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👁️</div>
+                        <div class="stat-number" id="profileTotalViews">0</div>
+                        <div class="stat-label">Total de Visualizações</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👍</div>
+                        <div class="stat-number" id="profileTotalLikes">0</div>
+                        <div class="stat-label">Total de Curtidas</div>
+                    </div>
+                </div>
+                
+                <!-- Tabs -->
+                <div class="profile-tabs">
+                    <button class="tab-btn active" onclick="switchProfileTab('topics')">📝 Meus Tópicos</button>
+                    <button class="tab-btn" onclick="switchProfileTab('account')">⚙️ Conta</button>
+                </div>
+                
+                <!-- Topics Tab -->
+                <div id="profileTabTopics" class="profile-tab-content active">
+                    <div class="topics-header">
+                        <h4>Seus Tópicos Publicados</h4>
+                        <button onclick="openNewTopicModal(); closeUserProfile();" class="btn-create-post">➕ Criar Novo Tópico</button>
+                    </div>
+                    <div id="userTopicsList" class="user-topics-list">
+                        <div class="loading-topics">
+                            <div class="loading-icon">📄</div>
+                            <p>Carregando seus tópicos...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Tab -->
+                <div id="profileTabAccount" class="profile-tab-content">
+                    <div class="account-info">
+                        <h4>Informações da Conta</h4>
+                        <div class="form-group">
+                            <label>Nome de Usuário</label>
+                            <input type="text" id="profileEditUsername" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de Conta</label>
+                            <input type="text" id="profileEditRole" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label>Último Login</label>
+                            <input type="text" id="profileLastLogin" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="security-section">
+                        <h4>Segurança</h4>
+                        <button onclick="openChangePassword()" class="btn-change-password">🔑 Alterar Senha</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="changePasswordModal" onclick="closeChangePassword(event)">
+        <div class="modal-content change-password-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3>🔑 Alterar Senha</h3>
+                <button onclick="closeChangePassword()" class="close-btn">✕</button>
+            </div>
+            <form onsubmit="saveNewPassword(event)" class="change-password-form">
+                <div class="form-group">
+                    <label>Senha Atual</label>
+                    <input type="password" id="currentPassword" required>
+                </div>
+                <div class="form-group">
+                    <label>Nova Senha</label>
+                    <input type="password" id="newPassword" required minlength="6">
+                </div>
+                <div class="form-group">
+                    <label>Confirmar Nova Senha</label>
+                    <input type="password" id="confirmPassword" required minlength="6">
+                </div>
+                <div class="form-actions">
+                    <button type="button" onclick="closeChangePassword()" class="btn-cancel">Cancelar</button>
+                    <button type="submit" class="btn-save">💾 Alterar Senha</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Database Status Indicator (Admin Only) -->
+    <div class="db-status" id="dbStatusIndicator" onclick="openDbModal()" style="display: none;">
+        <div class="db-indicator"></div>
+        <span id="dbStatusIndicatorText">Database: Modo Local</span>
+    </div>
+
+    <!-- Save Status Indicator -->
+    <div class="save-status" id="saveStatus">
+        <div class="save-indicator">💾</div>
+        <span>Salvando...</span>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="src/services/auth.js"></script>
+    <script src="src/services/api.js"></script>
+    <script src="src/components/app.js"></script>
+    
+    <!-- Authentication Check -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar autenticação antes de carregar a aplicação
+            if (!window.binahAuth.isLoggedIn()) {
+                console.log('🚫 Usuário não autenticado - redirecionando para login');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            console.log('✅ Usuário autenticado:', window.binahAuth.getCurrentUser().username);
+            
+            // Configurar interface baseada no tipo de usuário
+            const currentUser = window.binahAuth.getCurrentUser();
+            const newTopicBtn = document.getElementById('newTopicBtn');
+            const dashboardBtn = document.getElementById('dashboardBtn');
+            const dbIndicator = document.getElementById('dbIndicator');
+            const dbStatusText = document.getElementById('dbStatusText');
+            const dbStatusIndicator = document.getElementById('dbStatusIndicator');
+            
+            // Todos os usuários podem criar posts
+            if (newTopicBtn) newTopicBtn.style.display = 'block';
+            
+            if (currentUser.role === 'admin') {
+                // Recursos exclusivos para admins
+                if (dashboardBtn) dashboardBtn.style.display = 'block';
+                
+                // Mostrar indicadores de banco apenas para admins
+                if (dbIndicator) dbIndicator.style.display = 'inline-block';
+                if (dbStatusText) dbStatusText.style.display = 'inline';
+                if (dbStatusIndicator) dbStatusIndicator.style.display = 'flex';
+                
+                console.log('🔑 Permissões de administrador ativadas');
+            } else {
+                console.log('👤 Usuário comum - pode criar e visualizar tópicos');
+            }
+            
+            // Adicionar informações do usuário no header
+            const userInfo = document.createElement('div');
+            userInfo.style.cssText = `
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 13px;
+                color: rgba(255,255,255,0.8);
+            `;
+            
+            userInfo.innerHTML = `
+                <span>👤 ${currentUser.username} ${currentUser.role === 'admin' ? '(Admin)' : '(Usuário)'}</span>
+                <button onclick="openUserProfile()" style="
+                    background: rgba(255,255,255,0.1);
+                    color: white;
+                    border: 1px solid rgba(255,255,255,0.2);
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    transition: all 0.3s;
+                    margin-right: 8px;
+                " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    👤 Perfil
+                </button>
+                <button onclick="logout()" style="
+                    background: rgba(255,255,255,0.1);
+                    color: white;
+                    border: 1px solid rgba(255,255,255,0.2);
+                    padding: 6px 12px;
+                    border-radius: 6px;
+                    cursor: pointer;
+                    font-size: 12px;
+                    transition: all 0.3s;
+                " onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+                    🚪 Sair
+                </button>
+            `;
+            
+            const statusBar = document.querySelector('.status-bar');
+            if (statusBar) {
+                statusBar.appendChild(userInfo);
+            }
+        });
+
+        // Variáveis globais para paginação
+        let currentPage = 1;
+        let postsPerPage = 5;
+        let userPosts = [];
+        
+        
+        async function loadUserStatistics(username) {
+            try {
+                // Buscar todos os tópicos
+                const allTopics = await window.binahAPI.getTopics();
+                
+                // Filtrar tópicos do usuário
+                userPosts = allTopics.filter(topic => topic.author === username);
+                
+                // Calcular estatísticas
+                const totalPosts = userPosts.length;
+                const totalViews = userPosts.reduce((sum, post) => sum + (post.views || 0), 0);
+                const totalLikes = userPosts.reduce((sum, post) => sum + (post.helpful || 0), 0);
+                
+                // Atualizar interface
+                document.getElementById('profilePostsCount').textContent = totalPosts;
+                document.getElementById('profileTotalViews').textContent = totalViews;
+                document.getElementById('profileTotalLikes').textContent = totalLikes;
+                
+                // Resetar paginação e carregar lista
+                currentPage = 1;
+                renderUserPostsList();
+                
+            } catch (error) {
+                console.error('Erro ao carregar estatísticas:', error);
+                document.getElementById('userPostsList').innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--danger);">
+                        <div style="font-size: 32px; margin-bottom: 10px;">❌</div>
+                        <p>Erro ao carregar seus tópicos</p>
+                    </div>
+                `;
+            }
+        }
+        
+        function renderUserPostsList() {
+            const container = document.getElementById('userPostsList');
+            const startIndex = (currentPage - 1) * postsPerPage;
+            const endIndex = startIndex + postsPerPage;
+            const pagesPosts = userPosts.slice(startIndex, endIndex);
+            
+            if (userPosts.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: var(--secondary);">
+                        <div style="font-size: 32px; margin-bottom: 10px;">📝</div>
+                        <p>Você ainda não criou nenhum tópico</p>
+                        <button onclick="closeUserProfile(); app?.openNewTopicModal();" style="
+                            background: var(--primary);
+                            color: white;
+                            border: none;
+                            padding: 10px 16px;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            margin-top: 15px;
+                            font-size: 14px;
+                        ">➕ Criar Primeiro Tópico</button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = pagesPosts.map(post => `
+                    <div onclick="viewPostFromProfile(${post.id})" style="
+                        background: var(--light);
+                        border: 1px solid var(--border);
+                        border-radius: 10px;
+                        padding: 15px;
+                        margin-bottom: 12px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                    " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='var(--shadow)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='none'">
+                        <div style="display: flex; justify-content: between; align-items: start; margin-bottom: 10px;">
+                            <h5 style="margin: 0; color: var(--dark); font-size: 16px; flex: 1;">${post.title}</h5>
+                            <div style="display: flex; gap: 15px; margin-left: 15px;">
+                                <div style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--secondary);">
+                                    <span>👁️</span>
+                                    <span>${post.views || 0}</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--secondary);">
+                                    <span>❤️</span>
+                                    <span>${post.helpful || 0}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="
+                                background: ${getCategoryColor(post.category)}20;
+                                color: ${getCategoryColor(post.category)};
+                                padding: 4px 8px;
+                                border-radius: 12px;
+                                font-size: 11px;
+                                font-weight: 500;
+                            ">${getCategoryIcon(post.category)} ${post.category}</span>
+                            <span style="font-size: 11px; color: var(--secondary);">
+                                ${new Date(post.date || post.created_date).toLocaleDateString('pt-BR')}
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            updatePaginationControls();
+        }
+        
+        function updatePaginationControls() {
+            const totalPages = Math.ceil(userPosts.length / postsPerPage);
+            const prevBtn = document.getElementById('prevPageBtn');
+            const nextBtn = document.getElementById('nextPageBtn');
+            const pageInfo = document.getElementById('pageInfo');
+            
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages;
+            pageInfo.textContent = `${currentPage} / ${Math.max(1, totalPages)}`;
+            
+            if (totalPages <= 1) {
+                prevBtn.style.display = 'none';
+                nextBtn.style.display = 'none';
+            } else {
+                prevBtn.style.display = 'block';
+                nextBtn.style.display = 'block';
+            }
+        }
+        
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderUserPostsList();
+            }
+        }
+        
+        function nextPage() {
+            const totalPages = Math.ceil(userPosts.length / postsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderUserPostsList();
+            }
+        }
+        
+        function viewPostFromProfile(postId) {
+            // Close profile modal first
+            closeUserProfile();
+            
+            // Wait a bit for the modal to close before opening the topic
+            setTimeout(() => {
+                if (window.app) {
+                    window.app.viewTopic(postId);
+                }
+            }, 100);
+        }
+        
+        function getCategoryColor(category) {
+            const colors = {
+                'Máquinas': '#3b82f6',
+                'Dosadoras': '#06b6d4',
+                'Manutenção': '#10b981',
+                'Erros': '#f59e0b',
+                'Procedimentos': '#8b5cf6'
+            };
+            return colors[category] || '#6b7280';
+        }
+        
+        function getCategoryIcon(category) {
+            const icons = {
+                'Máquinas': '⚙️',
+                'Dosadoras': '💧',
+                'Manutenção': '🔧',
+                'Erros': '⚠️',
+                'Procedimentos': '📋'
+            };
+            return icons[category] || '📄';
+        }
+        
+        function closeUserProfile(event) {
+            // Only close if clicking on backdrop or close button
+            if (event && event.target !== event.currentTarget && !event.target.classList.contains('close-btn')) {
+                return;
+            }
+            
+            const modal = document.getElementById('userProfileModal');
+            const header = document.getElementById('header');
+            
+            if (modal) {
+                modal.style.display = 'none';
+            }
+            
+            // Remove dark theme from header
+            if (header) {
+                header.classList.remove('dark-theme');
+            }
+        }
+        
+        function changePassword() {
+            // Implementar modal de mudança de senha
+            alert('Funcionalidade de alteração de senha será implementada em versão futura');
+        }
+
+        // Função global de logout
+        function logout() {
+            if (confirm('Deseja realmente sair do sistema?')) {
+                window.binahAuth.logout();
+                window.location.href = 'login.html';
+            }
+        }
+
+        // Monitoramento de segurança contínuo
+        setInterval(() => {
+            if (!window.binahAuth.isLoggedIn()) {
+                console.warn('🚨 Sessão expirada - redirecionando para login');
+                window.location.href = 'login.html';
+            }
+        }, 30000); // Verifica a cada 30 segundos
+
+        // Proteção contra manipulação de sessão
+        (function() {
+            const originalFetch = window.fetch;
+            window.fetch = function(...args) {
+                if (!window.binahAuth.isLoggedIn()) {
+                    console.error('🚫 Acesso negado - usuário não autenticado');
+                    window.location.href = 'login.html';
+                    return Promise.reject('Unauthorized');
+                }
+                return originalFetch.apply(this, arguments);
+            };
+        })();
+    </script>
+</body>
+</html>

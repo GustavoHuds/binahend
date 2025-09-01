@@ -1,0 +1,248 @@
+/* ========== HERO SECTION ========== */
+.hero-section {
+    min-height: calc(100vh - 80px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 50px 20px 50px 20px;
+    margin-top: 80px;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hero-section.hidden {
+    display: none !important;
+}
+
+.hero-title {
+    background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #6366f1 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 48px;
+    font-weight: 800;
+    margin-bottom: 15px;
+    text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    animation: fadeInUp 0.8s ease both;
+}
+
+.hero-subtitle {
+    color: rgba(255,255,255,0.85);
+    font-size: 18px;
+    margin-bottom: 50px;
+    font-weight: 300;
+    animation: fadeInUp 0.8s ease 0.2s both;
+}
+
+/* ========== QUICK ACCESS (ACIMA DA BUSCA) ========== */
+.quick-access {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-bottom: 30px;
+    animation: fadeInUp 0.8s ease 0.4s both;
+    max-width: 700px;
+    width: 100%;
+}
+
+.quick-btn {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 20px;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.quick-btn:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ========== SEARCH CONTAINER (ABAIXO DOS BOTÕES) ========== */
+.search-container {
+    position: relative;
+    width: 100%;
+    max-width: 700px;
+    animation: fadeInUp 0.8s ease 0.6s both;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.search-box {
+    width: 100%;
+    padding: 22px 70px 22px 28px;
+    font-size: 18px;
+    border: none;
+    border-radius: 50px;
+    background: rgba(255,255,255,0.95);
+    color: var(--dark);
+    box-shadow: var(--shadow-xl);
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    margin: 0 auto;
+    display: block;
+}
+
+.search-box::placeholder {
+    color: var(--secondary);
+}
+
+.search-box:focus {
+    outline: none;
+    box-shadow: var(--shadow-xl), 0 0 0 4px rgba(99, 102, 241, 0.1);
+    transform: translateY(-1px) scale(1.01);
+}
+
+.search-btn {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary);
+    color: white;
+    border: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: var(--shadow);
+}
+
+.search-btn:hover {
+    background: var(--primary-light);
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ========== LIVE SEARCH RESULTS ========== */
+.live-search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow-xl);
+    max-height: 400px;
+    overflow-y: auto;
+    z-index: 200;
+    margin-top: 8px;
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.live-search-results.active {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+.live-result-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.live-result-item:last-child {
+    border-bottom: none;
+}
+
+.live-result-item:hover {
+    background: var(--light);
+}
+
+.live-result-icon {
+    font-size: 18px;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.live-result-content {
+    flex: 1;
+}
+
+.live-result-title {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.live-result-meta {
+    font-size: 12px;
+    color: var(--secondary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.live-result-category {
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+/* ========== ANIMATIONS ========== */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+    to {
+        opacity: 0;
+    }
+}
